@@ -20,17 +20,18 @@ def convert(number)
   return CACHE[number] if CACHE[number]
 
   CACHE[number] = [
-    [(number/2).floor, (number/3).floor, (number/4).floor].map{ |res| convert(res)}.sum,
+    [(number/2).floor, (number/3).floor, (number/4).floor].map { |res| convert(res) }.sum,
     number
   ].max
 end
 
 def numbers
-  NUMBERS
+  @numbers
 end
 
 def output(number)
-  puts "Result: #{number}"
+  @output ||= []
+  @output << number
 end
 
 def challenge
@@ -40,10 +41,16 @@ def challenge
 end
 
 def main
- time = Benchmark.measure do
-  challenge
- end
- puts time.real
+  @numbers = []
+  File.open("input_example.txt", "r").each_line do |line|
+    @numbers << line.to_i
+  end
+  time = Benchmark.measure do
+    challenge
+  end
+  file = File.open("output.txt", "w")
+  file.write(@output.join("\n"))
+  puts time.real
 end
 
 main
