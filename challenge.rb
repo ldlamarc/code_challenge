@@ -1,7 +1,7 @@
 require 'benchmark'
 
-
 CACHE = {}
+SPLIT = [2, 3, 4]
 
 def cache(input)
   return CACHE[input] if CACHE[input]
@@ -14,35 +14,19 @@ def convert(number)
     return 0 if number == 0
 
     [
-      [(number/2).floor, (number/3).floor, (number/4).floor].map { |res| convert(res) }.sum,
+      SPLIT.map { |split| convert((number/split).floor) }.sum,
       number
     ].max
   end
 end
 
-def numbers
-  @numbers
-end
-
-def output(number)
-  @output ||= []
-  @output << number
-end
-
-def challenge
-  numbers.map do |number|
-    output(convert(number))
-  end
-end
-
 def main
-  @numbers = []
+  @output = []
 
   time = Benchmark.measure do
     File.open("input_example.txt", "r").each_line do |line|
-      @numbers << line.to_i
+      @output << convert(line.to_i)
     end
-    challenge
     file = File.open("output.txt", "w")
     file.write(@output.join("\n"))
   end
