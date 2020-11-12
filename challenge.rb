@@ -1,6 +1,5 @@
 require 'benchmark'
 
-
 CACHE = {}
 
 def cache(input)
@@ -9,14 +8,28 @@ def cache(input)
   CACHE[input] = yield
 end
 
-def convert(number)
-  cache(number) do
-    return 0 if number == 0
+class Ingot
+  def self.from_integer(n)
+    cache(n) do
+      Ingot.new(n)
+    end
+  end
 
-    [
-      [(number/2).floor, (number/3).floor, (number/4).floor].map { |res| convert(res) }.sum,
-      number
-    ].max
+  attr_reader :n
+
+  def initialize(n)
+    @n = n
+  end
+
+  def max_value
+    @max_value ||= begin
+      return 0 if n == 0
+
+      [
+        [(n/2).floor, (n/3).floor, (n/4).floor].map { |res| Ingot.from_integer(res).max_value }.sum,
+        n
+      ].max
+    end
   end
 end
 
@@ -31,7 +44,7 @@ end
 
 def challenge
   numbers.map do |number|
-    output(convert(number))
+    output(Ingot.from_integer(number).max_value)
   end
 end
 
