@@ -42,14 +42,15 @@ end
 
 def main
   @numbers = []
-  File.open("input_example.txt", "r").each_line do |line|
-    @numbers << line.to_i
-  end
+
   time = Benchmark.measure do
+    File.open("input_example.txt", "r").each_line do |line|
+      @numbers << line.to_i
+    end
     challenge
+    file = File.open("output.txt", "w")
+    file.write(@output.join("\n"))
   end
-  file = File.open("output.txt", "w")
-  file.write(@output.join("\n"))
   puts time.real
 end
 
